@@ -30,8 +30,18 @@ const List<String> _kBlockTags = <String>[
   'tr'
 ];
 
+const _aReg =
+    "http[s]?://(?:[a-zA-Z]|[0-9]|[\$-_@.&#+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+";
 const List<String> _kListTags = <String>['ul', 'ol'];
-const List<String> _kImgType = ['png', 'jpg', 'JPEG', 'gif', 'jpeg'];
+
+const List<String> _kImgType = [
+  'png',
+  'jpg',
+  'JPEG',
+  'gif',
+  'jpeg',
+];
+const List<String> kVideoType = ['mp4', 'flv', 'avi'];
 
 bool _isBlockTag(String? tag) => _kBlockTags.contains(tag);
 
@@ -183,25 +193,27 @@ class MarkdownBuilder implements md.NodeVisitor {
 
   forEachElement(md.Node node, {List<md.Node>? children}) {
     if (node is md.Element) {
-      // if (node.tag == 'a' && node.attributes['href'] != null) {
-      //   final href = node.attributes['href'];
-      //   if (href is String &&
-      //       _kImgType.contains(href.split('.').last) &&
-      //       children != null) {
-      //     final i = children.indexOf(node);
-      //     if (i >= 0) {
-      //       children[i] = md.Element('img', null)
-      //         ..attributes.addAll({'src': href, 'alt': ''});
-      //     }
-      //     return;
-      //   }
-      // }
       if (node.children == null ||
           node.children?.length == 0 ||
           node.tag == 'pre' ||
           node.tag == 'a' ||
           node.tag == 'img') {
-        final textContent = node.textContent;
+        final str = node.textContent;
+
+        if (node.tag == 'img') {
+          return;
+        }
+
+        List<md.Node> nodes = [];
+        if (kVideoType.contains(str.split('.').last)) {
+          nodes.add(md.Element('img', null)
+            ..attributes.addAll({'src': str, 'alt': ''}));
+          final i = children?.indexOf(node) ?? -1;
+
+          if (i >= 0) {
+            children?[i] = nodes.first;
+          }
+        }
       } else {
         for (var item in node.children!) {
           forEachElement(item, children: node.children);
@@ -209,21 +221,23 @@ class MarkdownBuilder implements md.NodeVisitor {
       }
     } else if (node is md.Text) {
       final str = node.textContent;
-      final aReg =
-          "http[s]?://(?:[a-zA-Z]|[0-9]|[\$-_@.&#+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+";
-      final iReg = '/upload.*?.(${_kImgType.join("|")})';
+
+      final iReg = '/upload.*.(${[_kImgType, kVideoType].join("|")})';
+
       List<md.Node> nodes = [];
       var index = 0;
       bool isChange = false;
-      RegExp('($aReg)|($iReg)').allMatches(str).forEach((element) {
+      RegExp('($_aReg)|($iReg)').allMatches(str).forEach((element) {
         isChange = true;
         final start = element.start;
         final end = element.end;
-        final s = str.substring(start, end);
+
         if (index != start) {
           nodes.add(md.Text(str.substring(index, start)));
         }
-        if (_kImgType.contains(s.split('.').last)) {
+        final s = str.substring(start, end).replaceAll(' ', '');
+
+        if ([..._kImgType, ...kVideoType].contains(s.split('.').last)) {
           nodes.add(md.Element('img', null)
             ..attributes.addAll({'src': s, 'alt': ''}));
         } else {
@@ -232,9 +246,6 @@ class MarkdownBuilder implements md.NodeVisitor {
               'href': s,
             }));
         }
-
-        // if (s.startsWith('http')) {
-        // } else {}
         index = end;
       });
 
