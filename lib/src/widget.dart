@@ -155,6 +155,7 @@ abstract class MarkdownWidget extends StatefulWidget {
     required this.data,
     this.selectable = false,
     this.styleSheet,
+    this.maxWidth,
     this.styleSheetTheme = MarkdownStyleSheetBaseTheme.material,
     this.syntaxHighlighter,
     this.onTapLink,
@@ -171,6 +172,7 @@ abstract class MarkdownWidget extends StatefulWidget {
     this.listItemCrossAxisAlignment =
         MarkdownListItemCrossAxisAlignment.baseline,
   }) : super(key: key);
+  final double? maxWidth;
 
   /// The Markdown to display.
   final String data;
@@ -307,6 +309,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget>
     // create a widget tree based on the elements.
     final MarkdownBuilder builder = MarkdownBuilder(
       delegate: this,
+      maxWidth: widget.maxWidth,
       selectable: widget.selectable,
       styleSheet: styleSheet,
       imageDirectory: widget.imageDirectory,
@@ -372,6 +375,7 @@ class MarkdownBody extends MarkdownWidget {
   const MarkdownBody({
     Key? key,
     required String data,
+    double? maxWidth,
     bool selectable = false,
     MarkdownStyleSheet? styleSheet,
     MarkdownStyleSheetBaseTheme? styleSheetTheme,
@@ -394,6 +398,7 @@ class MarkdownBody extends MarkdownWidget {
   }) : super(
           key: key,
           data: data,
+          maxWidth: maxWidth,
           selectable: selectable,
           styleSheet: styleSheet,
           styleSheetTheme: styleSheetTheme,
@@ -417,6 +422,7 @@ class MarkdownBody extends MarkdownWidget {
 
   @override
   Widget build(BuildContext context, List<Widget>? children) {
+    print('-xxxxx');
     if (children!.length == 1) {
       return children.single;
     }
@@ -443,6 +449,7 @@ class Markdown extends MarkdownWidget {
   const Markdown({
     Key? key,
     required String data,
+    double? maxWidth,
     bool selectable = false,
     MarkdownStyleSheet? styleSheet,
     MarkdownStyleSheetBaseTheme? styleSheetTheme,
@@ -467,6 +474,7 @@ class Markdown extends MarkdownWidget {
   }) : super(
           key: key,
           data: data,
+          maxWidth: maxWidth,
           selectable: selectable,
           styleSheet: styleSheet,
           styleSheetTheme: styleSheetTheme,

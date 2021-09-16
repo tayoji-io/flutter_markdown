@@ -14,6 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   markdown: ^4.0.0
+    # path: ../markdown
    
   meta: ^1.3.0
   path: ^1.8.0

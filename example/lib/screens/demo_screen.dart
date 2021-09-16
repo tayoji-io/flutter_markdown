@@ -163,11 +163,11 @@ class DemoNotesView extends StatelessWidget {
       future: notes,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          print(snapshot.data);
           return Markdown(
-            data: snapshot.data!,
-            extensionSet: MarkdownExtensionSet.githubFlavored.value,
-            onTapLink: (String text, String? href, String title) =>
-                linkOnTapHandler(context, text, href, title),
+            data:
+                '**m**\n| head1 | head2 | head3 |\n| ------ | ------ | ------ |\n| column1 | column2 | column3 |\n| column1 | column2 | column3 |',
+            // extensionSet: MarkdownExtensionSet.githubFlavored.value,
           );
         } else {
           return const CircularProgressIndicator();

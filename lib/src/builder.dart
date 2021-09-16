@@ -9,6 +9,7 @@ import 'package:markdown/markdown.dart' as md;
 import '_functions_io.dart' if (dart.library.html) '_functions_web.dart';
 import 'style_sheet.dart';
 import 'widget.dart';
+import 'dart:ui' as ui;
 
 const List<String> _kBlockTags = <String>[
   'p',
@@ -27,7 +28,8 @@ const List<String> _kBlockTags = <String>[
   'table',
   'thead',
   'tbody',
-  'tr'
+  'tr',
+  'tabs'
 ];
 
 const _aReg =
@@ -48,9 +50,10 @@ bool _isBlockTag(String? tag) => _kBlockTags.contains(tag);
 bool _isListTag(String tag) => _kListTags.contains(tag);
 
 class _BlockElement {
-  _BlockElement(this.tag);
+  _BlockElement(this.tag, {this.label});
 
   final String? tag;
+  final String? label;
   final List<Widget> children = <Widget>[];
 
   int nextListIndex = 0;
@@ -58,6 +61,10 @@ class _BlockElement {
 
 class _TableElement {
   final List<TableRow> rows = <TableRow>[];
+}
+
+class _TabsElement {
+  final List<_TabsRow> rows = <_TabsRow>[];
 }
 
 /// A collection of widgets that should be placed adjacent to (inline with)
@@ -114,8 +121,10 @@ class MarkdownBuilder implements md.NodeVisitor {
     required this.builders,
     required this.listItemCrossAxisAlignment,
     this.fitContent = false,
+    this.maxWidth,
     this.onTapText,
   });
+  final double? maxWidth;
 
   /// A delegate that controls how link and `pre` elements behave.
   final MarkdownBuilderDelegate delegate;
@@ -159,6 +168,8 @@ class MarkdownBuilder implements md.NodeVisitor {
   final List<String> _listIndents = <String>[];
   final List<_BlockElement> _blocks = <_BlockElement>[];
   final List<_TableElement> _tables = <_TableElement>[];
+  final List<_TabsElement> _tabs = <_TabsElement>[];
+
   final List<_InlineElement> _inlines = <_InlineElement>[];
   final List<GestureRecognizer> _linkHandlers = <GestureRecognizer>[];
   String? _currentBlockTag;
@@ -172,6 +183,7 @@ class MarkdownBuilder implements md.NodeVisitor {
     _listIndents.clear();
     _blocks.clear();
     _tables.clear();
+    _tabs.clear();
     _inlines.clear();
     _linkHandlers.clear();
     _isInBlockquote = false;
@@ -180,6 +192,26 @@ class MarkdownBuilder implements md.NodeVisitor {
     nodes.forEach((element) {
       forEachElement(element, children: nodes);
     });
+    var i = 0;
+    while (i < nodes.length) {
+      var end = i;
+      for (var j = i; j < nodes.length; j++) {
+        final node = nodes[j];
+        if (node is md.Element &&
+            node.tag == 'pre' &&
+            node.label != null &&
+            node.label!.isNotEmpty) {
+          end += 1;
+        } else {
+          break;
+        }
+      }
+      if (end - i > 1) {
+        final item = md.Element('tabs', nodes.sublist(i, end));
+        nodes.replaceRange(i, end, [item]);
+      }
+      i += 1;
+    }
     for (final md.Node node in nodes) {
       assert(_blocks.length == 1);
       node.accept(this);
@@ -275,6 +307,8 @@ class MarkdownBuilder implements md.NodeVisitor {
           start = int.parse(element.attributes['start']!) - 1;
       } else if (tag == 'blockquote') {
         _isInBlockquote = true;
+      } else if (tag == 'tabs') {
+        _tabs.add(_TabsElement());
       } else if (tag == 'table') {
         _tables.add(_TableElement());
       } else if (tag == 'tr') {
@@ -286,10 +320,6 @@ class MarkdownBuilder implements md.NodeVisitor {
         }
         _tables.single.rows.add(TableRow(
           decoration: decoration,
-          // TODO(stuartmorgan): This should be fixed, not suppressed; enabling
-          // this lint warning exposed that the builder is modifying the
-          // children of TableRows, even though they are @immutable.
-          // ignore: prefer_const_literals_to_create_immutables
           children: <Widget>[],
         ));
       }
@@ -465,12 +495,37 @@ class MarkdownBuilder implements md.NodeVisitor {
             ],
           );
         }
+      } else if (tag == 'tabs') {
+        child = _TabsMarkdownWidget(
+          _tabs.removeLast().rows,
+          textStyle: styleSheet.h3,
+          dividerColor: styleSheet.tableBorder?.bottom.color,
+        );
       } else if (tag == 'table') {
-        child = Table(
-          defaultColumnWidth: styleSheet.tableColumnWidth!,
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          border: styleSheet.tableBorder,
-          children: _tables.removeLast().rows,
+        final _rows = _tables.removeLast().rows;
+
+        var count = 1;
+        _rows.forEach((element) {
+          final l = element.children?.length ?? 0;
+          if (l > count) count = l;
+        });
+        final _w = (maxWidth ??
+                (MediaQueryData.fromWindow(ui.window).size.width - 30)) -
+            count * 10;
+        child = Scrollbar(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.zero,
+            scrollDirection: Axis.horizontal,
+            child: Table(
+              defaultColumnWidth: count <= 2
+                  ? FixedColumnWidth(_w / count)
+                  : MinColumnWidth(
+                      FixedColumnWidth(180), IntrinsicColumnWidth()),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              border: styleSheet.tableBorder,
+              children: _rows,
+            ),
+          ),
         );
       } else if (tag == 'blockquote') {
         _isInBlockquote = false;
@@ -482,10 +537,21 @@ class MarkdownBuilder implements md.NodeVisitor {
           ),
         );
       } else if (tag == 'pre') {
-        child = DecoratedBox(
-          decoration: styleSheet.codeblockDecoration!,
-          child: child,
-        );
+        if (element.label != null &&
+            element.label!.isNotEmpty &&
+            _tabs.length > 0) {
+          _tabs.last.rows.add(_TabsRow(
+              element.label!,
+              DecoratedBox(
+                decoration: styleSheet.codeblockDecoration!,
+                child: child,
+              )));
+        } else {
+          child = DecoratedBox(
+            decoration: styleSheet.codeblockDecoration!,
+            child: child,
+          );
+        }
       } else if (tag == 'hr') {
         child = Container(decoration: styleSheet.horizontalRuleDecoration);
       }
@@ -836,5 +902,125 @@ class MarkdownBuilder implements md.NodeVisitor {
         textAlign: textAlign ?? TextAlign.start,
       );
     }
+  }
+}
+
+class TabsMarkdownElement implements MarkdownElementBuilder {
+  @override
+  Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
+    return Container();
+  }
+
+  @override
+  void visitElementBefore(md.Element element) {}
+
+  @override
+  Widget? visitText(md.Text text, TextStyle? preferredStyle) {
+    return Container();
+  }
+}
+
+class _TabsRow {
+  final String label;
+  final Widget child;
+  _TabsRow(this.label, this.child);
+}
+
+class _TabsMarkdownWidget extends StatefulWidget {
+  final Color? lineColor;
+  final TextStyle? textStyle;
+  final Color? dividerColor;
+
+  final List<_TabsRow> rows;
+  _TabsMarkdownWidget(this.rows,
+      {this.lineColor, this.textStyle, this.dividerColor});
+  @override
+  State<StatefulWidget> createState() => _TabsMarkdownWidgetState();
+}
+
+class _TabsMarkdownWidgetState extends State<_TabsMarkdownWidget> {
+  var index = 0;
+  @override
+  Widget build(BuildContext context) {
+    final dividerColor = widget.dividerColor ?? Theme.of(context).dividerColor;
+    final backgroundColor = Theme.of(context).backgroundColor;
+    return Column(
+      children: [
+        DefaultTabController(
+            length: widget.rows.length,
+            child: Container(
+              height: 40,
+              child: Stack(
+                children: [
+                  Positioned(
+                      right: 0,
+                      left: 0,
+                      height: 0.5,
+                      bottom: 2.5,
+                      child: Container(
+                        color: dividerColor,
+                      )),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(left: 8),
+                    child: TabBar(
+                        isScrollable: true,
+                        labelPadding: EdgeInsets.zero,
+                        labelStyle: widget.textStyle,
+                        labelColor: widget.textStyle?.color,
+                        indicatorWeight: 0,
+                        indicator: BoxDecoration(),
+                        onTap: (i) => setState(() {
+                              index = i;
+                            }),
+                        tabs: List.generate(widget.rows.length, (i) {
+                          final seleted = i == index;
+                          final element = widget.rows[i];
+
+                          return Tab(
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(5)),
+                                      border: seleted
+                                          ? Border.all(
+                                              width: 0.5, color: dividerColor)
+                                          : null),
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                      '${element.label.substring(0, 1).toUpperCase()}${element.label.substring(1, element.label.length).toLowerCase()}'),
+                                ),
+                                Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    height: 5,
+                                    bottom: -2,
+                                    child: Container(
+                                      color: seleted ? backgroundColor : null,
+                                    )),
+                                Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    height: 0.5,
+                                    bottom: 2.5,
+                                    child: Container(
+                                      color: seleted ? backgroundColor : null,
+                                    ))
+                              ],
+                            ),
+                          );
+                        }).toList()),
+                  ),
+                ],
+              ),
+            )),
+        widget.rows[index].child
+      ],
+    );
   }
 }

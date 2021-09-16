@@ -12,6 +12,11 @@ const String _markdownData = """
 # Markdown Example
 Markdown allows you to easily include formatted text, images, and even formatted
 Dart code in your app.
+电子书PDF：
+|书名|发明者量化交易入门|商品期货量化交易实战|
+|-|-|-|
+|封面| http://www.fmz.c/upload/asset/170273a325477e5bc8d3.png | /upload/asset/17118c7d918c1ff4f5c9.png |
+|链接|https://q.fmz.com/chart/doc/fmzquantbook.pdf|https://q.fmz.com/chart/doc/fmzcfquant.pdf|
 
 ## Titles
 
@@ -52,10 +57,10 @@ Select the valid headers:
 
 ## Images
 
-![Flutter logo](/dart-lang/site-shared/master/src/_assets/image/flutter/icon/64.png)
 
 ## Tables
 
+a
 |Syntax                                 |Result                               |
 |---------------------------------------|-------------------------------------|
 |`*italic 1*`                           |*italic 1*                           |
@@ -170,7 +175,7 @@ class OriginalMarkdownDemo extends StatelessWidget
           controller: controller,
           selectable: true,
           data: _markdownData,
-          imageDirectory: 'https://raw.githubusercontent.com',
+          imageDirectory: 'http://www.fmz.com',
         ),
       ),
       floatingActionButton: FloatingActionButton(
