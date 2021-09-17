@@ -154,6 +154,7 @@ abstract class MarkdownWidget extends StatefulWidget {
     Key? key,
     required this.data,
     this.selectable = false,
+    this.maxWidth,
     this.styleSheet,
     this.styleSheetTheme = MarkdownStyleSheetBaseTheme.material,
     this.syntaxHighlighter,
@@ -174,6 +175,7 @@ abstract class MarkdownWidget extends StatefulWidget {
 
   /// The Markdown to display.
   final String data;
+  final double? maxWidth;
 
   /// If true, the text is selectable.
   ///
