@@ -77,9 +77,11 @@ packages:
   markdown:
     dependency: transitive
     description:
-      path: "../../markdown"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "490cf9bf267388c2ae908a75dd79d06e4ac565df"
+      url: "https://github.com/tayoji9527/markdown.git"
+    source: git
     version: "4.0.1-dev"
   matcher:
     dependency: transitive

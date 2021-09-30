@@ -336,7 +336,6 @@ class MarkdownBuilder implements md.NodeVisitor {
     final String tag = element.tag;
     _currentBlockTag ??= tag;
 
-    print(tag);
     if (builders.containsKey(tag)) {
       builders[tag]!.visitElementBefore(element);
     }
@@ -888,10 +887,10 @@ class MarkdownBuilder implements md.NodeVisitor {
       case 'pre':
         return styleSheet.codeblockAlign;
       case 'hr':
-        print('Markdown did not handle hr for alignment');
+        // print('Markdown did not handle hr for alignment');
         break;
       case 'li':
-        print('Markdown did not handle li for alignment');
+        // print('Markdown did not handle li for alignment');
         break;
     }
     return WrapAlignment.start;
