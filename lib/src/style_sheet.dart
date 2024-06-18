@@ -77,35 +77,35 @@ class MarkdownStyleSheet {
 
   /// Creates a [MarkdownStyleSheet] from the [TextStyle]s in the provided [ThemeData].
   factory MarkdownStyleSheet.fromTheme(ThemeData theme) {
-    assert(theme.textTheme.bodyText2?.fontSize != null);
+    assert(theme.textTheme.bodyMedium?.fontSize != null);
     return MarkdownStyleSheet(
       a: const TextStyle(color: Colors.blue),
-      p: theme.textTheme.bodyText2,
-      code: theme.textTheme.bodyText2!.copyWith(
+      p: theme.textTheme.bodyMedium,
+      code: theme.textTheme.bodyMedium!.copyWith(
         backgroundColor: theme.cardTheme.color ?? theme.cardColor,
         fontFamily: 'monospace',
-        fontSize: theme.textTheme.bodyText2!.fontSize! * 0.85,
+        fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85,
       ),
-      h1: theme.textTheme.headline5,
-      h2: theme.textTheme.headline6,
-      h3: theme.textTheme.subtitle1,
-      h4: theme.textTheme.bodyText1,
-      h5: theme.textTheme.bodyText1,
-      h6: theme.textTheme.bodyText1,
+      h1: theme.textTheme.headlineSmall,
+      h2: theme.textTheme.titleLarge,
+      h3: theme.textTheme.titleMedium,
+      h4: theme.textTheme.bodyLarge,
+      h5: theme.textTheme.bodyLarge,
+      h6: theme.textTheme.bodyLarge,
       em: const TextStyle(fontStyle: FontStyle.italic),
       strong: const TextStyle(fontWeight: FontWeight.bold),
       del: const TextStyle(decoration: TextDecoration.lineThrough),
-      blockquote: theme.textTheme.bodyText2,
-      img: theme.textTheme.bodyText2,
-      checkbox: theme.textTheme.bodyText2!.copyWith(
+      blockquote: theme.textTheme.bodyMedium,
+      img: theme.textTheme.bodyMedium,
+      checkbox: theme.textTheme.bodyMedium!.copyWith(
         color: theme.primaryColor,
       ),
       blockSpacing: 8.0,
       listIndent: 24.0,
-      listBullet: theme.textTheme.bodyText2,
+      listBullet: theme.textTheme.bodyMedium,
       listBulletPadding: const EdgeInsets.only(right: 4),
       tableHead: const TextStyle(fontWeight: FontWeight.w600),
-      tableBody: theme.textTheme.bodyText2,
+      tableBody: theme.textTheme.bodyMedium,
       tableHeadAlign: TextAlign.center,
       tableBorder: TableBorder.all(
         color: theme.dividerColor,
@@ -246,32 +246,32 @@ class MarkdownStyleSheet {
   factory MarkdownStyleSheet.largeFromTheme(ThemeData theme) {
     return MarkdownStyleSheet(
       a: const TextStyle(color: Colors.blue),
-      p: theme.textTheme.bodyText2,
-      code: theme.textTheme.bodyText2!.copyWith(
+      p: theme.textTheme.bodyMedium,
+      code: theme.textTheme.bodyMedium!.copyWith(
         backgroundColor: theme.cardTheme.color ?? theme.cardColor,
         fontFamily: 'monospace',
-        fontSize: theme.textTheme.bodyText2!.fontSize! * 0.85,
+        fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85,
       ),
-      h1: theme.textTheme.headline2,
-      h2: theme.textTheme.headline3,
-      h3: theme.textTheme.headline4,
-      h4: theme.textTheme.headline5,
-      h5: theme.textTheme.headline6,
-      h6: theme.textTheme.subtitle1,
+      h1: theme.textTheme.displayMedium,
+      h2: theme.textTheme.displaySmall,
+      h3: theme.textTheme.headlineMedium,
+      h4: theme.textTheme.headlineSmall,
+      h5: theme.textTheme.titleLarge,
+      h6: theme.textTheme.titleMedium,
       em: const TextStyle(fontStyle: FontStyle.italic),
       strong: const TextStyle(fontWeight: FontWeight.bold),
       del: const TextStyle(decoration: TextDecoration.lineThrough),
-      blockquote: theme.textTheme.bodyText2,
-      img: theme.textTheme.bodyText2,
-      checkbox: theme.textTheme.bodyText2!.copyWith(
+      blockquote: theme.textTheme.bodyMedium,
+      img: theme.textTheme.bodyMedium,
+      checkbox: theme.textTheme.bodyMedium!.copyWith(
         color: theme.primaryColor,
       ),
       blockSpacing: 8.0,
       listIndent: 24.0,
-      listBullet: theme.textTheme.bodyText2,
+      listBullet: theme.textTheme.bodyMedium,
       listBulletPadding: const EdgeInsets.only(right: 4),
       tableHead: const TextStyle(fontWeight: FontWeight.w600),
-      tableBody: theme.textTheme.bodyText2,
+      tableBody: theme.textTheme.bodyMedium,
       tableHeadAlign: TextAlign.center,
       tableBorder: TableBorder.all(
         color: theme.dividerColor,

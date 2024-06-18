@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:ui' as ui;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -9,7 +11,6 @@ import 'package:markdown/markdown.dart' as md;
 import '_functions_io.dart' if (dart.library.html) '_functions_web.dart';
 import 'style_sheet.dart';
 import 'widget.dart';
-import 'dart:ui' as ui;
 
 const List<String> _kBlockTags = <String>[
   'p',
@@ -203,8 +204,8 @@ class MarkdownBuilder implements md.NodeVisitor {
 
         if (node is md.Element &&
             node.tag == 'pre' &&
-            node.label != null &&
-            node.label!.isNotEmpty) {
+            (node as dynamic).label != null &&
+            (node as dynamic).label!.isNotEmpty) {
           end += 1;
         } else {
           break;
@@ -247,8 +248,8 @@ class MarkdownBuilder implements md.NodeVisitor {
 
         if (node is md.Element &&
             node.tag == 'pre' &&
-            node.label != null &&
-            node.label!.isNotEmpty) {
+            (node as dynamic).label != null &&
+            (node as dynamic).label!.isNotEmpty) {
           end += 1;
         } else {
           break;
@@ -548,7 +549,7 @@ class MarkdownBuilder implements md.NodeVisitor {
 
         var count = 1;
         _rows.forEach((element) {
-          final l = element.children?.length ?? 0;
+          final l = element.children.length;
           if (l > count) count = l;
         });
         final _w = (maxWidth ??
@@ -579,11 +580,11 @@ class MarkdownBuilder implements md.NodeVisitor {
           ),
         );
       } else if (tag == 'pre') {
-        if (element.label != null &&
-            element.label!.isNotEmpty &&
+        if ((element as dynamic).label != null &&
+            (element as dynamic).label!.isNotEmpty &&
             _tabs.length > 0) {
           _tabs.last.rows.add(_TabsRow(
-              element.label!,
+              (element as dynamic).label!,
               DecoratedBox(
                 decoration: styleSheet.codeblockDecoration!,
                 child: child,
@@ -642,7 +643,7 @@ class MarkdownBuilder implements md.NodeVisitor {
           _mergeInlineChildren(current.children, align),
           textAlign: align,
         );
-        _tables.single.rows.last.children!.add(child);
+        _tables.single.rows.last.children.add(child);
       } else if (tag == 'a') {
         _linkHandlers.removeLast();
       }
@@ -985,81 +986,59 @@ class _TabsMarkdownWidgetState extends State<_TabsMarkdownWidget> {
   @override
   Widget build(BuildContext context) {
     final dividerColor = widget.dividerColor ?? Theme.of(context).dividerColor;
-    final backgroundColor = Theme.of(context).backgroundColor;
+    final backgroundColor = Theme.of(context).colorScheme.surface;
+
     return Column(
       children: [
         DefaultTabController(
             length: widget.rows.length,
             child: Container(
-              height: 40,
-              child: Stack(
-                children: [
-                  Positioned(
-                      right: 0,
-                      left: 0,
-                      height: 0.5,
-                      bottom: 2.5,
-                      child: Container(
-                        color: dividerColor,
-                      )),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(left: 8),
-                    child: TabBar(
-                        isScrollable: true,
-                        labelPadding: EdgeInsets.zero,
-                        labelStyle: widget.textStyle,
-                        labelColor: widget.textStyle?.color,
-                        indicatorWeight: 0,
-                        indicator: BoxDecoration(),
-                        onTap: (i) => setState(() {
-                              index = i;
-                            }),
-                        tabs: List.generate(widget.rows.length, (i) {
-                          final seleted = i == index;
-                          final element = widget.rows[i];
-
-                          return Tab(
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(5)),
-                                      border: seleted
-                                          ? Border.all(
-                                              width: 0.5, color: dividerColor)
-                                          : null),
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                      '${element.label.substring(0, 1).toUpperCase()}${element.label.substring(1, element.label.length).toLowerCase()}'),
-                                ),
-                                Positioned(
-                                    left: 0,
-                                    right: 0,
-                                    height: 5,
-                                    bottom: -2,
-                                    child: Container(
-                                      color: seleted ? backgroundColor : null,
-                                    )),
-                                Positioned(
-                                    left: 0,
-                                    right: 0,
-                                    height: 0.5,
-                                    bottom: 2.5,
-                                    child: Container(
-                                      color: seleted ? backgroundColor : null,
-                                    ))
-                              ],
-                            ),
-                          );
-                        }).toList()),
-                  ),
-                ],
-              ),
+              height: 38,
+              margin: EdgeInsets.only(bottom: 5),
+              child: TabBar(
+                  isScrollable: true,
+                  labelPadding: EdgeInsets.zero,
+                  labelStyle: widget.textStyle,
+                  labelColor: widget.textStyle?.color,
+                  indicatorWeight: 0,
+                  indicator: BoxDecoration(
+                      border: Border(
+                          bottom:
+                              BorderSide(width: 2, color: backgroundColor))),
+                  padding: EdgeInsets.only(left: 8, right: 8),
+                  tabAlignment: TabAlignment.start,
+                  onTap: (i) => setState(() {
+                        index = i;
+                      }),
+                  tabs: List.generate(widget.rows.length, (i) {
+                    final seleted = i == index;
+                    final element = widget.rows[i];
+                    final side = BorderSide(width: 0.5, color: dividerColor);
+                    return Tab(
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(5)),
+                                border: seleted
+                                    ? Border(
+                                        top: side,
+                                        left: side,
+                                        right: side,
+                                      )
+                                    : null),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            alignment: Alignment.center,
+                            child: Text(
+                                '${element.label.substring(0, 1).toUpperCase()}${element.label.substring(1, element.label.length).toLowerCase()}'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList()),
             )),
         widget.rows[index].child
       ],

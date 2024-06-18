@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
-import '../shared/dropdown_menu.dart';
 import '../shared/markdown_demo_widget.dart';
 import '../shared/markdown_extensions.dart';
 
@@ -57,18 +55,18 @@ class _BasicMarkdownDemoState extends State<BasicMarkdownDemo> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Column(
               children: <Widget>[
-                DropdownMenu<MarkdownExtensionSet>(
-                  items: _menuItems,
-                  label: 'Extension Set:',
-                  initialValue: _extensionSet,
-                  onChanged: (MarkdownExtensionSet? value) {
-                    if (value != _extensionSet) {
-                      setState(() {
-                        _extensionSet = value!;
-                      });
-                    }
-                  },
-                ),
+                // DropdownMenu<MarkdownExtensionSet>(
+                //   items: _menuItems,
+                //   label: 'Extension Set:',
+                //   initialValue: _extensionSet,
+                //   onChanged: (MarkdownExtensionSet? value) {
+                //     if (value != _extensionSet) {
+                //       setState(() {
+                //         _extensionSet = value!;
+                //       });
+                //     }
+                //   },
+                // ),
                 Expanded(
                   child: Markdown(
                     key: Key(_extensionSet.name),
@@ -113,22 +111,22 @@ class _BasicMarkdownDemoState extends State<BasicMarkdownDemo> {
             children: <Widget>[
               Text(
                 'See the following link for more information:',
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 8),
               Text(
                 'Link text: $text',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 8),
               Text(
                 'Link destination: $href',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 8),
               Text(
                 'Link title: $title',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_markdown_example/shared/markdown_extensions.dart';
 
@@ -106,7 +105,7 @@ a
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: LayoutBuilder(
             builder: (cxt, con) => Markdown(
-              data: data,
+              data: aaa,
               extensionSet: MarkdownExtensionSet.githubFlavored.value,
             ),
           ),

@@ -60,7 +60,7 @@
 
 ## 0.4.2
 
- * Fix parsing of image caption & alt attributes
+ * Fix parsing of image bodySmall & alt attributes
  * Fix baseline alignment in lists
  * Support `LineBreakSyntax`
 

@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import '../shared/dropdown_menu.dart';
+
 import '../shared/markdown_demo_widget.dart';
 import '../shared/markdown_extensions.dart';
 
@@ -76,30 +76,30 @@ class _WrapAlignmentDemoState extends State<WrapAlignmentDemo> {
         if (snapshot.connectionState == ConnectionState.done) {
           return Column(
             children: <Widget>[
-              DropdownMenu<WrapAlignment>(
-                items: _wrapAlignmentMenuItems,
-                label: 'Wrap Alignment:',
-                initialValue: _wrapAlignment,
-                onChanged: (WrapAlignment? value) {
-                  if (value != _wrapAlignment) {
-                    setState(() {
-                      _wrapAlignment = value!;
-                    });
-                  }
-                },
-              ),
-              DropdownMenu<double>(
-                items: _blockSpacingMenuItems,
-                label: 'Block Spacing:',
-                initialValue: _blockSpacing,
-                onChanged: (double? value) {
-                  if (value != _blockSpacing) {
-                    setState(() {
-                      _blockSpacing = value!;
-                    });
-                  }
-                },
-              ),
+              // DropdownMenu<WrapAlignment>(
+              //   items: _wrapAlignmentMenuItems,
+              //   label: 'Wrap Alignment:',
+              //   initialValue: _wrapAlignment,
+              //   onChanged: (WrapAlignment? value) {
+              //     if (value != _wrapAlignment) {
+              //       setState(() {
+              //         _wrapAlignment = value!;
+              //       });
+              //     }
+              //   },
+              // ),
+              // DropdownMenu<double>(
+              //   items: _blockSpacingMenuItems,
+              //   label: 'Block Spacing:',
+              //   initialValue: _blockSpacing,
+              //   onChanged: (double? value) {
+              //     if (value != _blockSpacing) {
+              //       setState(() {
+              //         _blockSpacing = value!;
+              //       });
+              //     }
+              //   },
+              // ),
               Expanded(
                 child: Markdown(
                   key: Key(_wrapAlignment.toString()),

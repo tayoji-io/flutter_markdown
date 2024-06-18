@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+
 import '../screens/demo_screen.dart';
 import '../shared/markdown_demo_widget.dart';
 
@@ -37,14 +38,14 @@ class DemoCard extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       widget.title,
-                      style: Theme.of(context).primaryTextTheme.headline5,
+                      style: Theme.of(context).primaryTextTheme.headlineSmall,
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
                       widget.description,
-                      style: Theme.of(context).primaryTextTheme.bodyText1,
+                      style: Theme.of(context).primaryTextTheme.bodyLarge,
                     ),
                   ],
                 ),
