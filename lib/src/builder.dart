@@ -997,53 +997,73 @@ class _TabsMarkdownWidgetState extends State<_TabsMarkdownWidget> {
       children: [
         DefaultTabController(
             length: widget.rows.length,
-            child: Container(
-              height: 38,
-              margin: EdgeInsets.only(bottom: 5),
-              child: TabBar(
-                  isScrollable: true,
-                  labelPadding: EdgeInsets.zero,
-                  labelStyle: widget.textStyle,
-                  labelColor: widget.textStyle?.color,
-                  indicatorWeight: 0,
-                  indicator: BoxDecoration(
-                      border: Border(
-                          bottom:
-                              BorderSide(width: 2, color: backgroundColor))),
-                  padding: EdgeInsets.only(left: 8, right: 8),
-                  tabAlignment: TabAlignment.start,
-                  onTap: (i) => setState(() {
-                        index = i;
-                      }),
-                  tabs: List.generate(widget.rows.length, (i) {
-                    final seleted = i == index;
-                    final element = widget.rows[i];
-                    final side = BorderSide(width: 0.5, color: dividerColor);
-                    return Tab(
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(5)),
-                                border: seleted
-                                    ? Border(
-                                        top: side,
-                                        left: side,
-                                        right: side,
-                                      )
-                                    : null),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            alignment: Alignment.center,
-                            child: Text(
-                                '${element.label.substring(0, 1).toUpperCase()}${element.label.substring(1, element.label.length).toLowerCase()}'),
+            child: Stack(
+              children: [
+                Positioned(
+                    left: 0,
+                    bottom: 5,
+                    right: 0,
+                    height: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom:
+                                  BorderSide(width: 1, color: dividerColor))),
+                    )),
+                Container(
+                  height: 38,
+                  width: double.infinity,
+                  margin: EdgeInsets.only(bottom: 5),
+                  child: TabBar(
+                      isScrollable: true,
+                      labelPadding: EdgeInsets.zero,
+                      labelStyle: widget.textStyle,
+                      labelColor: widget.textStyle?.color,
+                      indicatorWeight: 0,
+                      indicator: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  width: 1, color: backgroundColor))),
+                      padding: EdgeInsets.only(left: 8, right: 8),
+                      tabAlignment: TabAlignment.start,
+                      onTap: (i) => setState(() {
+                            index = i;
+                          }),
+                      tabs: List.generate(widget.rows.length, (i) {
+                        final seleted = i == index;
+                        final element = widget.rows[i];
+                        final side = BorderSide(width: 1, color: dividerColor);
+                        return Tab(
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: backgroundColor,
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(5)),
+                                    border: seleted
+                                        ? Border(
+                                            top: side,
+                                            left: side,
+                                            right: side,
+                                          )
+                                        : Border(
+                                            bottom: BorderSide(
+                                                width: 1,
+                                                color: dividerColor))),
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                alignment: Alignment.center,
+                                child: Text(
+                                    '${element.label.substring(0, 1).toUpperCase()}${element.label.substring(1, element.label.length).toLowerCase()}'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList()),
+                        );
+                      }).toList()),
+                ),
+              ],
             )),
         widget.rows[index].child
       ],
