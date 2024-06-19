@@ -4,17 +4,13 @@
 
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
-import 'package:meta/meta.dart';
 
 import '_functions_io.dart' if (dart.library.html) '_functions_web.dart';
-import 'builder.dart';
-import 'style_sheet.dart';
 
 /// Signature for callbacks used by [MarkdownWidget] when the user taps a link.
 /// The callback will return the link text, destination, and title from the
@@ -171,7 +167,9 @@ abstract class MarkdownWidget extends StatefulWidget {
     this.fitContent = false,
     this.listItemCrossAxisAlignment =
         MarkdownListItemCrossAxisAlignment.baseline,
+    this.softLineBreakPattern = false,
   }) : super(key: key);
+  final bool softLineBreakPattern;
 
   /// The Markdown to display.
   final String data;
@@ -319,6 +317,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget>
       fitContent: widget.fitContent,
       listItemCrossAxisAlignment: widget.listItemCrossAxisAlignment,
       onTapText: widget.onTapText,
+      softLineBreakPattern: widget.softLineBreakPattern,
     );
 
     _children = builder.build(astNodes);
@@ -393,6 +392,7 @@ class MarkdownBody extends MarkdownWidget {
         MarkdownListItemCrossAxisAlignment.baseline,
     this.shrinkWrap = true,
     bool fitContent = true,
+    bool softLineBreakPattern = false,
   }) : super(
           key: key,
           data: data,
@@ -412,6 +412,7 @@ class MarkdownBody extends MarkdownWidget {
           listItemCrossAxisAlignment: listItemCrossAxisAlignment,
           bulletBuilder: bulletBuilder,
           fitContent: fitContent,
+          softLineBreakPattern: softLineBreakPattern,
         );
 
   /// See [ScrollView.shrinkWrap]
@@ -466,6 +467,7 @@ class Markdown extends MarkdownWidget {
     this.controller,
     this.physics,
     this.shrinkWrap = false,
+    bool softLineBreakPattern = false,
   }) : super(
           key: key,
           data: data,
@@ -484,6 +486,7 @@ class Markdown extends MarkdownWidget {
           builders: builders,
           listItemCrossAxisAlignment: listItemCrossAxisAlignment,
           bulletBuilder: bulletBuilder,
+          softLineBreakPattern: softLineBreakPattern,
         );
 
   /// The amount of space by which to inset the children.

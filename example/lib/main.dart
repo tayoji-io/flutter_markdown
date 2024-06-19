@@ -11,6 +11,12 @@ void main() {
 }
 
 final aaa = '''
+
+
+asfasf
+asfasf
+zzzdasd
+
 ```js
 function main1(){
     // 因为不存在编号为123的订单，所以会出错
@@ -107,6 +113,7 @@ a
             builder: (cxt, con) => Markdown(
               data: aaa,
               extensionSet: MarkdownExtensionSet.githubFlavored.value,
+              softLineBreakPattern: true,
             ),
           ),
         ));

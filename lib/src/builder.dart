@@ -111,20 +111,22 @@ abstract class MarkdownBuilderDelegate {
 ///  * [Markdown], which is a widget that parses and displays Markdown.
 class MarkdownBuilder implements md.NodeVisitor {
   /// Creates an object that builds a [Widget] tree from parsed Markdown.
-  MarkdownBuilder({
-    required this.delegate,
-    required this.selectable,
-    required this.styleSheet,
-    required this.imageDirectory,
-    required this.imageBuilder,
-    required this.checkboxBuilder,
-    required this.bulletBuilder,
-    required this.builders,
-    required this.listItemCrossAxisAlignment,
-    this.fitContent = false,
-    this.maxWidth,
-    this.onTapText,
-  });
+  MarkdownBuilder(
+      {required this.delegate,
+      required this.selectable,
+      required this.styleSheet,
+      required this.imageDirectory,
+      required this.imageBuilder,
+      required this.checkboxBuilder,
+      required this.bulletBuilder,
+      required this.builders,
+      required this.listItemCrossAxisAlignment,
+      this.fitContent = false,
+      this.maxWidth,
+      this.onTapText,
+      this.softLineBreakPattern = false});
+  final bool softLineBreakPattern;
+
   final double? maxWidth;
 
   /// A delegate that controls how link and `pre` elements behave.
@@ -447,6 +449,9 @@ class MarkdownBuilder implements md.NodeVisitor {
         text = text.replaceAll(_leadingSpacesPattern, '');
       }
 
+      if (softLineBreakPattern) {
+        return text;
+      }
       // Spaces at end of the line and beginning of the next line are removed.
       // https://github.github.com/gfm/#example-670
       return text.replaceAll(_softLineBreakPattern, ' ');
