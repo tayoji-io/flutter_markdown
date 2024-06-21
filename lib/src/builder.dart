@@ -1018,13 +1018,9 @@ class _TabsMarkdownWidgetState extends State<_TabsMarkdownWidget> {
                       isScrollable: true,
                       labelPadding: EdgeInsets.zero,
                       labelStyle: widget.textStyle,
-                      labelColor: widget.textStyle?.color,
+                      labelColor: Theme.of(context).colorScheme.primary,
                       indicatorWeight: 0,
-                      indicator: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1, color: backgroundColor))),
-                      padding: EdgeInsets.only(left: 8, right: 8),
+                      indicator: BoxDecoration(),
                       tabAlignment: TabAlignment.start,
                       onTap: (i) => setState(() {
                             index = i;
@@ -1040,19 +1036,19 @@ class _TabsMarkdownWidgetState extends State<_TabsMarkdownWidget> {
                               Container(
                                 height: 40,
                                 decoration: BoxDecoration(
-                                    color: backgroundColor,
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(5)),
-                                    border: seleted
-                                        ? Border(
-                                            top: side,
-                                            left: side,
-                                            right: side,
-                                          )
-                                        : Border(
-                                            bottom: BorderSide(
-                                                width: 1,
-                                                color: dividerColor))),
+                                    border: Border(
+                                  top: seleted
+                                      ? BorderSide(
+                                          width: 2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)
+                                      : side,
+                                  right: i < widget.rows.length - 1
+                                      ? BorderSide.none
+                                      : side,
+                                  left: side,
+                                )),
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 alignment: Alignment.center,
                                 child: Text(
