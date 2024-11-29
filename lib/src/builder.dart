@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:ui' as ui;
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -462,13 +460,21 @@ class MarkdownBuilder implements md.NodeVisitor {
       child = builders[_blocks.last.tag!]!
           .visitText(text, styleSheet.styles[_blocks.last.tag!]);
     } else if (_blocks.last.tag == 'pre') {
-      child = Scrollbar(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: styleSheet.codeblockPadding,
-          child: _buildRichText(delegate.formatText(styleSheet, text.text)),
-        ),
-      );
+      child = Builder(
+          builder: (cxt) => MediaQuery.removePadding(
+              context: cxt,
+              removeBottom: true,
+              removeTop: true,
+              removeLeft: true,
+              removeRight: true,
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: styleSheet.codeblockPadding,
+                  child: _buildRichText(
+                      delegate.formatText(styleSheet, text.text)),
+                ),
+              )));
     } else {
       child = _buildRichText(
         TextSpan(
@@ -557,24 +563,33 @@ class MarkdownBuilder implements md.NodeVisitor {
           final l = element.children.length;
           if (l > count) count = l;
         });
-        final _w = (maxWidth ??
-                (MediaQueryData.fromWindow(ui.window).size.width - 30)) -
-            count * 10;
-        child = Scrollbar(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.horizontal,
-            child: Table(
-              defaultColumnWidth: count <= 2
-                  ? FixedColumnWidth(_w / count)
-                  : MinColumnWidth(
-                      FixedColumnWidth(180), IntrinsicColumnWidth()),
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              border: styleSheet.tableBorder,
-              children: _rows,
-            ),
-          ),
-        );
+
+        child = Builder(builder: (context) {
+          final _w = (maxWidth ??
+                  (MediaQueryData.fromView(View.of(context)).size.width - 30)) -
+              count * 10;
+          return MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              removeLeft: true,
+              removeRight: true,
+              removeTop: true,
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.horizontal,
+                  child: Table(
+                    defaultColumnWidth: count <= 2
+                        ? FixedColumnWidth(_w / count)
+                        : MinColumnWidth(
+                            FixedColumnWidth(180), IntrinsicColumnWidth()),
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    border: styleSheet.tableBorder,
+                    children: _rows,
+                  ),
+                ),
+              ));
+        });
       } else if (tag == 'blockquote') {
         _isInBlockquote = false;
         child = DecoratedBox(

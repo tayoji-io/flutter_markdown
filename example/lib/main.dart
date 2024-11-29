@@ -22,6 +22,77 @@ function main1(){
     // 因为不存在编号为123的订单，所以会出错
     exchange.GetOrder("123")
     var error = GetLastError()
+     var error = GetLastError()
+      var error = GetLastError()
+       var error = GetLastError()
+        var error = GetLastError()
+         var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+           var error = GetLastError()
+     var error = GetLastError()
+      var error = GetLastError()
+       var error = GetLastError()
+        var error = GetLastError()
+         var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+           var error = GetLastError()
+     var error = GetLastError()
+      var error = GetLastError()
+       var error = GetLastError()
+        var error = GetLastError()
+         var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+           var error = GetLastError()
+     var error = GetLastError()
+      var error = GetLastError()
+       var error = GetLastError()
+        var error = GetLastError()
+         var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()123123 GetLastError()123123 GetLastError()123123 GetLastError()123123 GetLastError()123123 GetLastError()123123
+          var error = GetLastError()
+          var error = GetLastError()
+          var error = GetLastError()
     Log(error)
 }
 ```
@@ -82,10 +153,10 @@ function main4(){
 class MyApp extends StatelessWidget {
   final data = """
 a
-| head1 | head2 | head3 |
+| head1 | head2 | head312312 |
 | ------ | ------ | ------ |
-| column1 | column2 | column3 |
-| column1 | column2 | column3 |
+| column1 | column2 | column31231231 |
+| column1 | column2 | column31231231column31231231 column31231231 |
 
 
 
@@ -111,7 +182,7 @@ a
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: LayoutBuilder(
             builder: (cxt, con) => Markdown(
-              data: aaa,
+              data: data,
               extensionSet: MarkdownExtensionSet.githubFlavored.value,
               softLineBreakPattern: true,
             ),
